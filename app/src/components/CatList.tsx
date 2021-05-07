@@ -5,6 +5,8 @@ import './CatList.css';
 
 import { Cat } from '../models/Cat';
 
+import { useHistory } from "react-router-dom";
+
 type CatListProps = {
     cats: Cat[];
     showLoad: boolean;
@@ -12,6 +14,8 @@ type CatListProps = {
 }
 
 const CatList: React.FC<CatListProps> = ({children, cats, showLoad, onLoadMore}) => {
+    let history = useHistory();
+
     return (
         <div>
             <div className="container">
@@ -19,7 +23,7 @@ const CatList: React.FC<CatListProps> = ({children, cats, showLoad, onLoadMore})
                     <Card className="cat-card" key={cat.image_id}>
                         <Card.Img variant="top" src={cat.image_url} />
                         <Card.Body className="cat-card-body">
-                            <Button variant="primary">View details</Button>
+                            <Button variant="primary" onClick={() => {history.push(`/${cat.image_id}`)}}>View details</Button>
                         </Card.Body>
                     </Card>
                 )}

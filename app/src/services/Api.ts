@@ -33,3 +33,19 @@ export const getBreedImages = (breed: string, page: number): Promise<Cat[]> => {
             };
         }));
 }
+
+export const getCat = (id: string): Promise<Cat> => {
+    return fetch(`${URL}/images/${id}`)
+        .then(res => res.json())
+        .then(res => {
+            return {
+                id: res.breeds[0].id,
+                description: res.breeds[0].description,
+                name: res.breeds[0].name,
+                origin: res.breeds[0].origin,
+                temperament: res.breeds[0].temperament,
+                image_id: res.id,
+                image_url: res.url,
+            };
+        });
+}

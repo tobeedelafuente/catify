@@ -1,10 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import {getBreedsList, getBreedImages} from './services/Api';
-import {Cat} from './models/Cat';
 import Form from 'react-bootstrap/Form';
 import CatList from './components/CatList';
-import CatDetails from './components/CatDetails';
+
+import { getBreedsList, getBreedImages } from './services/Api';
+import { Cat } from './models/Cat';
+
+import {  useLocation } from "react-router-dom";
 
 const App: React.FC = () => {
   const [cats, setCats] = useState<Cat[]>([]);
@@ -12,19 +14,39 @@ const App: React.FC = () => {
   const [page, setPage] = useState(1);
   const [canLoad, setCanLoad] = useState(true);
   const [catImages, setCatImages] = useState<Cat[]>([]);
+
+  const { search } = useLocation();
+  const match = search.match(/breed=(.*)/);
+  let type = match?.[1];
   
   useEffect(() => {
-      getBreedsList()
-        .then(res => setCats(res))
-        .catch(err => console.log(err))
-  },[]);
+    getBreedsList()
+      .then(res => {
+        setCats(res);
+
+        if (type) {
+          doSelection(type, res);
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        alert("Apologies but we could not load new cats for you at this time! Miau!");
+      })
+  }, []);
 
   const handleOnChange = (e: any) => {
-    const cat: Cat|undefined = cats.find(c => c.id === e.target.value);
+    const id = e.target.value;
+    doSelection(id, cats);
+  }
+
+  const doSelection = (id: string, arr: Cat[]) => {
+    const cat: Cat|undefined = arr.find(c => c.id === id);
     if (cat) {
       getBreedImages(cat.id, 1)
         .then(res => setCatImages(res))
         .catch(err => console.log(err));
+    } else {
+      alert("Apologies but we could not load new cats for you at this time! Miau!");
     }
     setPage(1);
     setSelected(cat);
@@ -53,31 +75,13 @@ const App: React.FC = () => {
     }
   }
 
-  const renderCatList = () => {
-    if (selected) {
-      return (
-        <CatList cats={catImages} showLoad={canLoad} onLoadMore={() => onLoadMore()}/>
-      );
-    } else {
-      return <div>No cats available</div>
-    }
-  }
-
-  const renderSelected = () => {
-    if (selected) {
-      return (
-        <CatDetails cat={selected}/>
-      );
-    }
-  }
-
   return (
     <div className="App">
       <h1>Cat Browser</h1>
       <Form>
         <Form.Group controlId="form">
           <Form.Label>Breed</Form.Label>
-          <Form.Control as="select" onChange={handleOnChange}>
+          <Form.Control as="select" onChange={handleOnChange} value={selected?.id || type}>
             <option>Select breed</option>
             {cats.map(cat => 
               <option value={cat.id} key={cat.id}>{cat.name}</option>
@@ -86,7 +90,11 @@ const App: React.FC = () => {
         </Form.Group>
       </Form>
       <div>
-      {renderCatList()}
+        {selected ?
+          <CatList cats={catImages} showLoad={canLoad} onLoadMore={() => onLoadMore()}/>
+          :
+          <div>No cats available</div>
+        }
       </div>
     </div>
   );

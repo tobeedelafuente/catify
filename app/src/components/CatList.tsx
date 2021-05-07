@@ -5,20 +5,31 @@ import './CatList.css';
 
 import { Cat } from '../models/Cat';
 
-const CatList: React.FC<{cats: Cat[]}> = ({children, cats}) => {
+type CatListProps = {
+    cats: Cat[];
+    showLoad: boolean;
+    onLoadMore: () => void;
+}
+
+const CatList: React.FC<CatListProps> = ({children, cats, showLoad, onLoadMore}) => {
     return (
         <div>
             <div className="container">
                 {cats.map(cat =>
-                    <Card key={cat.image_id}>
+                    <Card className="cat-card" key={cat.image_id}>
                         <Card.Img variant="top" src={cat.image_url} />
-                        <Card.Body>
+                        <Card.Body className="cat-card-body">
                             <Button variant="primary">View details</Button>
                         </Card.Body>
                     </Card>
                 )}
             </div>
-            <Button variant="primary">Load more</Button>
+            {showLoad ? 
+                <Button variant="success" onClick={onLoadMore}>Load more</Button>
+                :
+                null
+            }
+            {children}
         </div>
     );
 }

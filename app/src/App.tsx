@@ -9,6 +9,8 @@ import CatDetails from './components/CatDetails';
 const App: React.FC = () => {
   const [cats, setCats] = useState<Cat[]>([]);
   const [selected, setSelected] = useState<Cat|undefined>(undefined);
+  const [page, setPage] = useState(1);
+  const [canLoad, setCanLoad] = useState(true);
   const [catImages, setCatImages] = useState<Cat[]>([]);
   
   useEffect(() => {
@@ -24,13 +26,37 @@ const App: React.FC = () => {
         .then(res => setCatImages(res))
         .catch(err => console.log(err));
     }
+    setPage(1);
     setSelected(cat);
+    setCanLoad(true);
+  }
+
+  const onLoadMore = () => {
+    if (selected) {
+      getBreedImages(selected.id, page + 1)
+        .then(res => {
+          const temp: Cat[] = [...catImages];
+          let found = false;
+
+          for (const cat of res) {
+            if (!catImages.find(c => c.image_id === cat.image_id)) {
+              temp.push(cat);
+              found = true;
+            }
+          }
+
+          setCatImages(temp);
+          setCanLoad(found);
+        })
+        .catch(err => console.log(err));
+      setPage(page + 1);
+    }
   }
 
   const renderCatList = () => {
     if (selected) {
       return (
-        <CatList cats={catImages}/>
+        <CatList cats={catImages} showLoad={canLoad} onLoadMore={() => onLoadMore()}/>
       );
     } else {
       return <div>No cats available</div>
@@ -62,7 +88,6 @@ const App: React.FC = () => {
       <div>
       {renderCatList()}
       </div>
-      {renderSelected()}
     </div>
   );
 }

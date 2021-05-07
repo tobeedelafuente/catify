@@ -1,14 +1,16 @@
-.container {
+.cat-list-container {
     display: flex;
     flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
 }
 
-.cat-card {
+.cat-list-card {
     width: 15rem;
     margin: 10px;
 }
 
-.cat-card-body {
+.cat-list-card-body {
     display: flex;
     justify-content: center;
     align-items: center;

@@ -34,11 +34,21 @@ const App: React.FC = () => {
       })
   }, []);
 
+  /**
+   * handleOnChange handles the onChange event of the select tag for the breeds.
+   * @param e event parameter of the onChange event.
+   */
   const handleOnChange = (e: any) => {
     const id = e.target.value;
     doSelection(id, cats);
   }
 
+  /**
+   * doSelection handles the event when the user selects a breed from the list or when the user
+   * comes back from the Cat Details page.
+   * @param id the breed id (ex. abys for Abyssinian).
+   * @param arr the list of cats acquired from the breeds endpoint.
+   */
   const doSelection = (id: string, arr: Cat[]) => {
     const cat: Cat|undefined = arr.find(c => c.id === id);
     if (cat) {
@@ -53,6 +63,9 @@ const App: React.FC = () => {
     setCanLoad(true);
   }
 
+  /**
+   * onLoadMore handles the event when the user clicks on the Load More button.
+   */
   const onLoadMore = () => {
     if (selected) {
       getBreedImages(selected.id, page + 1)

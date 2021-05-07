@@ -18,21 +18,21 @@ const CatList: React.FC<CatListProps> = ({children, cats, showLoad, onLoadMore})
 
     return (
         <div>
-            <div className="container">
+            <div className="cat-list-container">
                 {cats.map(cat =>
-                    <Card className="cat-card" key={cat.image_id}>
+                    <Card className="cat-list-card" key={cat.image_id}>
                         <Card.Img variant="top" src={cat.image_url} />
-                        <Card.Body className="cat-card-body">
+                        <Card.Body className="cat-list-card-body">
                             <Button variant="primary" onClick={() => {history.push(`/${cat.image_id}`)}}>View details</Button>
                         </Card.Body>
                     </Card>
                 )}
             </div>
             {showLoad ? 
-                <Button variant="success" onClick={onLoadMore}>Load more</Button>
+                    <Button variant="success" onClick={onLoadMore}>Load more</Button>
                 :
-                null
-            }
+                    null
+                }
             {children}
         </div>
     );

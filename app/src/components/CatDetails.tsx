@@ -30,12 +30,14 @@ const CatDetails: React.FC = () => {
     },[slug]);
 
     return (
-        <div>
+        <div className="cat-details-container">
             {!loading ? 
                 <div>
                     {cat && !loading ?
-                        <Card>
-                            <Button variant="primary"  onClick={() => {history.push(`/?breed=${cat.id}`)}}>Back</Button>
+                        <Card className="cat-details-card">
+                            <Card.Header>
+                                <Button variant="primary"  onClick={() => {history.push(`/?breed=${cat.id}`)}}>Back</Button>
+                            </Card.Header>
                             <Card.Img variant="top" src={cat.image_url} />
                             <Card.Body>
                                 <h4>{cat.name}</h4>
@@ -45,11 +47,11 @@ const CatDetails: React.FC = () => {
                             </Card.Body>
                         </Card>
                     :
-                    <div>Apologies but we could not load new cats for you at this time! Miau!</div>
+                        <div>Apologies but we could not load new cats for you at this time! Miau!</div>
                     }
                 </div>
             :
-            null
+                null
             }
         </div>
     );

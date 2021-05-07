@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 15rem;
+    margin: 10px;
+}
+
+.view-detail {
+    width: 100%;
+    left: 0;
+    bottom: 10px;
+    position: absolute;
+}
+
+.card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

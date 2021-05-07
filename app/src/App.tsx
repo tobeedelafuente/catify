@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.css';
-import {getBreedsList} from './services/Api';
+import {getBreedsList, getBreedImages} from './services/Api';
 import {Cat} from './models/Cat';
 import Form from 'react-bootstrap/Form';
+import CatList from './components/CatList';
+import CatDetails from './components/CatDetails';
 
 const App: React.FC = () => {
   const [cats, setCats] = useState<Cat[]>([]);
   const [selected, setSelected] = useState<Cat|undefined>(undefined);
+  const [catImages, setCatImages] = useState<Cat[]>([]);
   
   useEffect(() => {
       getBreedsList()
@@ -15,8 +18,31 @@ const App: React.FC = () => {
   },[]);
 
   const handleOnChange = (e: any) => {
-    const cat = cats.find(c => c.id === e.target.value);
+    const cat: Cat|undefined = cats.find(c => c.id === e.target.value);
+    if (cat) {
+      getBreedImages(cat.id, 1)
+        .then(res => setCatImages(res))
+        .catch(err => console.log(err));
+    }
     setSelected(cat);
+  }
+
+  const renderCatList = () => {
+    if (selected) {
+      return (
+        <CatList cats={catImages}/>
+      );
+    } else {
+      return <div>No cats available</div>
+    }
+  }
+
+  const renderSelected = () => {
+    if (selected) {
+      return (
+        <CatDetails cat={selected}/>
+      );
+    }
   }
 
   return (
@@ -34,8 +60,9 @@ const App: React.FC = () => {
         </Form.Group>
       </Form>
       <div>
-      {selected ? selected.name : "No cats available"}
+      {renderCatList()}
       </div>
+      {renderSelected()}
     </div>
   );
 }
